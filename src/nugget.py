@@ -3,6 +3,8 @@ Created on 02/10/2011
 
 @author: ariel
 '''
+#!/usr/bin/python
+
 import pygtk
 pygtk.require20()
 import gtk
@@ -13,7 +15,6 @@ from DevicesController import DeviceController
 
 class VoidObject:
     pass
-
 
 if __name__ == '__main__':
     gtk.gdk.threads_init()
