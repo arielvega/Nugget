@@ -49,6 +49,8 @@ class SmsGui(gtk.Notebook):
         self.receivegui.load_messages()
 
     def on_switch_page(self, notebook, page, page_number, *w):
+        #if page_number == 0:
+        #    self.sendgui.load_contacts()
         if page_number == 1:
             self.receivegui.load_messages()
 
@@ -114,21 +116,17 @@ class SmsSendGui(gtk.Table):
     def load_contacts(self):
         port = None
         try:
-            port = self.data.model.controller.device_active.port['conf']
+            port = self.smsgui.data.model.controller.device_active.port['conf']
+            if port <> None:
+                dev = mobile.MobilePhone(mobile.ATTerminalConnection(port))
+                self._lstPhoneBook.clear()
+                self._lstPhoneBook.add_all(dev.get_phonebook())
+                dev.power_off()
+                self._lblStatus.set_text('Listo')
+            else:
+                self._lblStatus.set_text('No se encontro dispositivo')
         except:
             pass
-        if port <> None:
-            terms = [mobile.ATTerminalConnection(port)]
-        else:
-            terms = mobile.list_at_terminals() # list available terminals :D 
-        if len(terms)>0:
-            dev = mobile.MobilePhone(terms[-1])
-            self._lstPhoneBook.clear()
-            self._lstPhoneBook.add_all(dev.get_phonebook())
-            dev.power_off()
-            self._lblStatus.set_text('Listo')
-        else:
-            self._lblStatus.set_text('No se encontro dispositivo')
 
     def add_number(self, number):
         num = self._txtNumber.get_text()
@@ -150,35 +148,31 @@ class SmsSendGui(gtk.Table):
     def send_message(self):
         port = None
         try:
-            port = self.data.model.controller.device_active.port['conf']
+            port = self.smsgui.data.model.controller.device_active.port['conf']
+            if port <> None:
+                numbers = self._txtNumber.get_text()
+                message = self._txtMessage.get_text(self._txtMessage.get_start_iter(), self._txtMessage.get_end_iter()) 
+                if (len(numbers)>0) and (len(message)>0):
+                    dev = mobile.MobilePhone(mobile.ATTerminalConnection(port))
+                    numbers = numbers.split(',')
+                    for number in numbers:
+                        sms = dev.create_sms(message, number)
+                        if sms.send():
+                            self._lblStatus.set_text('Mensaje enviado a ' + number)
+                        else:
+                            self._lblStatus.set_text('No se pudo enviar mensaje a ' + number)
+                    dev.power_off()
+                else:
+                    if (len(numbers) == 0):
+                        self._lblStatus.set_text('Debe introducir un telefono')
+                        return
+                    if (len(message) == 0):
+                        self._lblStatus.set_text('Debe escribir su mensaje')
+                        return
+            else:
+                self._lblStatus.set_text('No se encontro dispositivo')
         except:
             pass
-        if port <> None:
-            terms = [mobile.ATTerminalConnection(port)]
-        else:
-            terms = mobile.list_at_terminals() # list available terminals :D 
-        numbers = self._txtNumber.get_text()
-        message = self._txtMessage.get_text(self._txtMessage.get_start_iter(), self._txtMessage.get_end_iter()) 
-        if (len(terms)>0) and (len(numbers)>0) and (len(message)>0):
-            dev = mobile.MobilePhone(terms[-1])
-            numbers = numbers.split(',')
-            for number in numbers:
-                sms = dev.create_sms(message, number)
-                if sms.send():
-                    self._lblStatus.set_text('Mensaje enviado a ' + number)
-                else:
-                    self._lblStatus.set_text('No se pudo enviar mensaje a ' + number)
-            dev.power_off()
-        else:
-            if (len(terms) == 0):
-                self._lblStatus.set_text('No se encontro dispositivo')
-                return
-            if (len(numbers) == 0):
-                self._lblStatus.set_text('Debe introducir un telefono')
-                return
-            if (len(message) == 0):
-                self._lblStatus.set_text('Debe escribir su mensaje')
-                return
 
     def cancel_message(self):
         self._txtMessage.set_text('')
@@ -306,21 +300,17 @@ class SmsReceiveGui(gtk.Table):
     def load_messages(self):
         port = None
         try:
-            port = self.data.model.controller.device_active.port['conf']
+            port = self.smsgui.data.model.controller.device_active.port['conf']
+            if port <> None:
+                dev = mobile.MobilePhone(mobile.ATTerminalConnection(port))
+                self._lstMessages.clear()
+                self._lstMessages.add_all(dev.list_sms())
+                dev.power_off()
+                self._lblStatus.set_text('Listo')
+            else:
+                self._lblStatus.set_text('No se encontro dispositivo')
         except:
             pass
-        if port <> None:
-            terms = [mobile.ATTerminalConnection(port)]
-        else:
-            terms = mobile.list_at_terminals() # list available terminals :D 
-        if len(terms)>0:
-            dev = mobile.MobilePhone(terms[-1])
-            self._lstMessages.clear()
-            self._lstMessages.add_all(dev.list_sms())
-            dev.power_off()
-            self._lblStatus.set_text('Listo')
-        else:
-            self._lblStatus.set_text('No se encontro dispositivo')
 
     def add_number(self, number):
         self._txtNumber.set_text(number)
@@ -374,29 +364,25 @@ class SmsReceiveGui(gtk.Table):
             return
         port = None
         try:
-            port = self.data.model.controller.device_active.port['conf']
+            port = self.smsgui.data.model.controller.device_active.port['conf']
+            if port <> None:
+                dev = mobile.MobilePhone(mobile.ATTerminalConnection(port))
+                dev.delete_sms(self.sms)
+                dev.power_off()
+                self._lblStatus.set_text('Mensaje eliminado')
+                self.sms = None
+                self.load_messages()
+                self._btnDelete.set_sensitive(False)
+                self._btnResend.set_sensitive(False)
+                self._btnResponse.set_sensitive(False)
+                self.set_message('')
+                self.add_number('')
+                self._lblDate.set_text('')
+                self._lblStatus.set_text('Listo')
+            else:
+                self._lblStatus.set_text('No se encontro dispositivo')
         except:
             pass
-        if port <> None:
-            terms = [mobile.ATTerminalConnection(port)]
-        else:
-            terms = mobile.list_at_terminals() # list available terminals :D 
-        if len(terms)>0:
-            dev = mobile.MobilePhone(terms[-1])
-            dev.delete_sms(self.sms)
-            dev.power_off()
-            self._lblStatus.set_text('Mensaje eliminado')
-            self.sms = None
-            self.load_messages()
-            self._btnDelete.set_sensitive(False)
-            self._btnResend.set_sensitive(False)
-            self._btnResponse.set_sensitive(False)
-            self.set_message('')
-            self.add_number('')
-            self._lblDate.set_text('')
-            self._lblStatus.set_text('Listo')
-        else:
-            self._lblStatus.set_text('No se encontro dispositivo')
 
     def response_message(self):
         if self.sms == None:

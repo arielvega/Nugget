@@ -6,6 +6,8 @@ try:
 except Exception, detail:
     print detail
 
+base = '/usr/share/nugget-data/'
+
 class ProgressDialog(gtk.Dialog):
     
     def __init__(self, parentw):
@@ -13,7 +15,7 @@ class ProgressDialog(gtk.Dialog):
         self.hbox = gtk.HBox()
         self.vbox.pack_start(self.hbox)
         self.image = gtk.Image()
-        self.image.set_from_file('./modules/connector/data/icons/network-transmit.png')
+        self.image.set_from_file(base + 'icons/network-transmit.png')
         self.label = gtk.Label('...')
         self.hbox.pack_start(self.image)
         self.hbox.pack_start(self.label)
@@ -29,10 +31,10 @@ class ProgressDialog(gtk.Dialog):
             if(not self.should_change):
                 return False
             if(self.__switch):
-                self.image.set_from_file('./modules/connector/data/icons/network-transmit.png')
+                self.image.set_from_file(base + 'icons/network-transmit.png')
                 self.__switch = False
             else:
-                self.image.set_from_file('./modules/connector/data/icons/network-receive.png')
+                self.image.set_from_file(base + 'icons/network-receive.png')
                 self.__switch = True
             return self.should_change
         self.should_change = True
@@ -43,4 +45,4 @@ class ProgressDialog(gtk.Dialog):
         self.__should_change = False
         super(ProgressDialog, self).hide()
         self.button.set_label('Cancelar')
-        self.image.set_from_file('./modules/connector/data/icons/network-transmit.png')
+        self.image.set_from_file(base + 'icons/network-transmit.png')

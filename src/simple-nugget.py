@@ -23,6 +23,7 @@ if __name__ == '__main__':
     data.model = VoidObject()
     data.model.controller = DeviceController()
     data.view = gtk2gui.GtkWindow('Nugget')
+    #plugins.admin.load_plugins(data, '/usr/share/pyshared/')
     plugins.admin.load_plugins(data)
     data.view.show_all()
     gtk.main()

@@ -14,6 +14,8 @@ from Progress import ProgressDialog
 from subprocess import Popen, PIPE
 from Status import *
 
+base = '/usr/share/nugget-data/'
+
 class Main(Plugin):
     def __init__(self, data):
         Plugin.__init__(self, data)
@@ -79,7 +81,7 @@ class ConnectorGui(gtk.Table):
 
     def __disconnected_dialog(self,monitor):
         self.__dialog.should_change = False
-        self.__dialog.image.set_from_file('./modules/connector/data/icons/network-error.png')
+        self.__dialog.image.set_from_file(base + 'icons/network-error.png')
         self._mainView.set_status_message("Error")
         self.__dialog.button.set_label("Cerrar")
 
@@ -91,7 +93,7 @@ class ConnectorGui(gtk.Table):
 
     def build_list_operators(self):
         from xml.dom.minidom import parse
-        midom = parse('./modules/connector/data/conf/operators.xml')
+        midom = parse(base + 'conf/operators.xml')
         m_operators = midom.childNodes[0].childNodes
         for m_operator in m_operators:
             if (m_operator.nodeType == 1):
@@ -130,7 +132,7 @@ class ConnectorGui(gtk.Table):
         for i in self.operators:
             iter = liststore.append()
             liststore.set_value(iter, 1, i.get_attrib('name'))
-            logo_path ="./modules/connector/data/icons/"+i.get_attrib('logo')+ '.png'
+            logo_path = base + "icons/"+i.get_attrib('logo')+ '.png'
             if os.path.exists(logo_path):
                 liststore.set_value(iter, 0, gtk.gdk.pixbuf_new_from_file(logo_path))
         self._cmbOperators.set_model(liststore)

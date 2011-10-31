@@ -1,5 +1,7 @@
 from xml.dom.minidom import parse
 
+base = '/usr/share/nugget-data/'
+
 class Device:
     def __init__(self):
         self.name = None
@@ -13,7 +15,7 @@ class Device:
 
 class DevicesAvalaible:
     def __init__(self):
-        midom=parse("./modules/connector/data/conf/modems.xml")
+        midom=parse(base + "conf/modems.xml")
         self.vendors = midom.childNodes[1].childNodes
         self.__nProduct = None
         self.__nVendor = None

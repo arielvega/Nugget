@@ -12,6 +12,8 @@ from uadh.plugins import Plugin
 import mobile
 
 
+base = '/usr/share/nugget-data/'
+
 
 class Main(Plugin):
     def __init__(self, data):
@@ -107,7 +109,7 @@ class PrepaidGui(gtk.Table):
             return self.conf[obj]
         if len(terms)>0:
             dev = mobile.MobilePhone(terms[-1])
-            configmanager = configurator.ConfConfigurator('data/conf/countries')
+            configmanager = configurator.ConfConfigurator(base + 'conf/countries')
             self.conf = configmanager.get_configuration('/' + dev.get_country_code() + '/' + dev.get_network_code() + '/prepaid.conf')
             dev.power_off()
         if self.conf <> None:

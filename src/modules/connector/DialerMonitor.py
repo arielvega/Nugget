@@ -41,10 +41,6 @@ class Monitor(gobject.GObject):
         self.dns_data = None
         self.select_operator = None
         self.status_flag = Status.PPP_STATUS_DISCONNECTED
-        #self.twvdialmon = threading.Timer(0.01, self.__wvdial_monitor)
-#        self.tpppdmon = Timeout(3.0, self.__pppd_monitor)
-#        self.trealwvdialmon = Timeout(2.0, self.__real_wvdial_monitor)
-#        self.tstatsmon = Timeout(2.0, self.__stats_monitor)
 
     def __create_config(self, modem_active):
         wvdial_conf = "[Dialer Defaults]\n"
@@ -71,11 +67,6 @@ class Monitor(gobject.GObject):
         
         cmd = "/usr/bin/wvdial -C %s" % self.wvdial_conf_file
         self.wvdial_p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE,stderr=PIPE, close_fds=True)
-        #self.twvdialmon.start()
-#        self.tpppdmon.start()
-
-#        self.trealwvdialmon.start()
-
         gobject.timeout_add(1000, self.__real_wvdial_monitor)
         gobject.timeout_add(3000, self.__pppd_monitor)
 
@@ -170,7 +161,6 @@ class Monitor(gobject.GObject):
                 self.__set_dns_info()
                 self.status_flag = Status.PPP_STATUS_CONNECTED
                 self.emit('connected')
-#                self.tstatsmon.start()
                 gobject.timeout_add(2000, self.__stats_monitor)
                 return False
             else:
