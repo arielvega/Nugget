@@ -13,7 +13,7 @@ setup(name='Nugget',
       author_email='uremix@googlegroups.com',
       url='https://github.com/arielvega/Nugget',
       license='GPL',
-      scripts=['Nugget'],
+      scripts=['Nugget', 'simple-nugget.py'],
       py_modules=['Devices', 'DevicesController'],
       packages = find_packages(),
       install_requires = ['python-mobile >= 0.2', 'uremix-app-developer-helper >= 0.1', 'python-configobj', 'python-dbus', 'python-gtk2']
