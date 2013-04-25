@@ -22,22 +22,13 @@
 
 
 '''
-Created on 26/10/2011
-Updated on 24/04/2013
+Created on 10/10/2011
 
 @author: Uremix Team (http://uremix.org)
 
 '''
 
-from setuptools import setup, find_packages  
-  
-setup(name='nugget',
-      version='0.7.8',
-      description='Un dialer para modems 3G/4G',
-      author='Grupo Uremix',
-      author_email='uremix@googlegroups.com',
-      url='https://github.com/arielvega/Nugget',
-      license='GPL V3',
-      scripts=['nugget'],
-      install_requires = ['python-mobile >= 0.2', 'uremix-app-developer-helper >= 0.1', 'python-configobj', 'python-dbus', 'python-gtk2', 'python-gobject','hal >=0.5']
-)
+PPP_STATUS_DISCONNECTED = 0
+PPP_STATUS_CONNECTED = 1 
+PPP_STATUS_CONNECTING = 2
+PPP_STATUS_DISCONNECTING = 3

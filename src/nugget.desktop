@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Exec=/usr/bin/nugget
+Icon=/usr/share/nugget-data/icons/icon.png
+StartupNotify=true
+Terminal=false
+Categories=Network;
+Name=Nugget
+Comment=Connect to internet with 3G modems
+Comment[es]=Conéctate a internet con tu modem 3G

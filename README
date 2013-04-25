@@ -2,8 +2,10 @@ Nugget es un dialer para modems 3G
 
 Nugget ha sido creado por la necesidad de contar con una aplicacion libre para poder acceder a las capacidades que proveen los modems 3G que algunas telefonicas dan en la actualidad.
 
-Version 0.7
-Se continua desarrollando bajo la rama nugget-modular la que permite que se puedan agregar modulos al programa original. 
+Version 0.7.8
+Se continua desarrollando bajo la rama nugget-modular la que permite que se puedan agregar modulos al programa original.
+Se hicieron cambios menores a los nombres de archivos, cambiando a nombres en minusculas.
+Se agrego la licencia gpl v3.
 
 Version 0.3
 Es posible realizar la conexion atravez del GUI

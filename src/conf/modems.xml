@@ -20,7 +20,7 @@
 	-->
 <modems>
 	<vendor name='ZTE' id='6610'>
-		<product id='8195'>
+		<product id='8195' name='ZTE MF190'>
 			<data>3</data>
 			<conf>1</conf>
 			<capabilities>
@@ -36,21 +36,33 @@
 		</product>
         <product id='4097' name='HUAWEI E1556/E620'>
 			<data>0</data>
-			<conf>1</conf>
+			<conf>2</conf>
 			<capabilities>
 			</capabilities>
 		</product>
 		<product id='5174' name='HUAWEI e173'>
 			<data>0</data>
-			<conf>1</conf>
+			<conf>2</conf>
 			<capabilities>
 			</capabilities>
 		</product>
 		<product id='5292' name='HUAWEI e153'>
 			<data>0</data>
-			<conf>1</conf>
+			<conf>4</conf>
 			<capabilities>
 			</capabilities>
+		</product>
+		<product id='5382' name='HUAWEI e398'>
+    		<data>0</data>
+    		<conf>2</conf>
+    		<capabilities>
+    		</capabilities>
+		</product>
+		<product id='5374' name='HUAWEI e353'>
+    		<data>0</data>
+    		<conf>2</conf>
+    		<capabilities>
+    		</capabilities>
 		</product>
 	</vendor>
 </modems>

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-gksu python $(which simple-nugget.py)
