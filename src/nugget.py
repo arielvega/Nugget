@@ -56,14 +56,14 @@ class Nugget(uadh.UObject):
         self.model.datapath = datapath
         self.view = gtk2gui.GtkWindow('Nugget 0.7.8')
         self.view.connect('destroy',self.on_exit)
-        #plugins.admin.load_plugins(self, '/usr/lib/nugget/')
-        plugins.admin.load_plugins(self, pluginspath)
-        self.view.show_all()
         self.controller = DeviceController()
         self.controller.connect('added_device', self.on_added_device)
         self.controller.connect('removed_device', self.on_removed_device)
         if self.controller.device_active <> None:
             self.on_added_device()
+        #plugins.admin.load_plugins(self, '/usr/lib/nugget/')
+        plugins.admin.load_plugins(self, pluginspath)
+        self.view.show_all()
         gtk.main()
         gtk.gdk.threads_leave()
     

@@ -34,8 +34,7 @@ import pygtk
 pygtk.require20()
 import gtk
 
-from uadh import gui
-from uadh.gui import gtk2gui
+from uadh.gui import gtk2gui, base
 
 from uadh.plugins import Plugin
 import mobile
@@ -46,7 +45,7 @@ class Main(Plugin):
         self._view = data.view
 
     def run(self):
-        s = gui.Section('Monitor',MonitorGui(self._view))
+        s = base.Section('Monitor',MonitorGui(self._view))
         self._view.add_section(s)
 
     def get_id(self):

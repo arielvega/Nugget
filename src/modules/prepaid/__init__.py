@@ -35,14 +35,14 @@ pygtk.require20()
 import gtk
 import gobject
 
-from uadh import gui, configurator
-from uadh.gui import gtk2gui
+from uadh import configurator
+from uadh.gui import gtk2gui, base
 
 from uadh.plugins import Plugin
 import mobile
 
 
-base = '/usr/share/nugget-data/'
+basepath = './'#'/usr/share/nugget-data/'
 
 
 class Main(Plugin):
@@ -51,7 +51,7 @@ class Main(Plugin):
         self._view = data.view
 
     def run(self):
-        s = gui.Section('Prepago', PrepaidGui(self._data))
+        s = base.Section('Prepago', PrepaidGui(self._data))
         self._view.add_section(s)
 
     def get_id(self):
@@ -71,7 +71,7 @@ class PrepaidGui(gtk.Table):
     def send_message(self, number, message):
         port = None
         try:
-            port = self.data.model.controller.device_active.port['conf']
+            port = self.data.controller.device_active.port['conf']
         except:
             pass
         if port <> None:
@@ -102,7 +102,7 @@ class PrepaidGui(gtk.Table):
     def make_call(self, number):
         port = None
         try:
-            port = self.data.model.controller.device_active.port['conf']
+            port = self.data.controller.device_active.port['conf']
         except:
             pass
         if port <> None:
@@ -127,7 +127,7 @@ class PrepaidGui(gtk.Table):
     def get_config(self, obj):
         port = None
         try:
-            port = self.data.model.controller.device_active.port['conf']
+            port = self.data.controller.device_active.port['conf']
             print port
         except:
             pass
@@ -139,7 +139,7 @@ class PrepaidGui(gtk.Table):
             return self.conf[obj]
         if len(terms)>0:
             dev = mobile.MobilePhone(terms[-1])
-            configmanager = configurator.ConfConfigurator(base + 'conf/countries')
+            configmanager = configurator.ConfConfigurator(basepath + 'conf/countries')
             self.conf = configmanager.get_configuration('/' + dev.get_country_code() + '/' + dev.get_network_code() + '/prepaid.conf')
             dev.power_off()
         if self.conf <> None:
@@ -255,8 +255,8 @@ class SelectPlanGui(gtk.Frame):
 
         self._cmbPlan = gtk2gui.ComboBoxObject(gtk2gui.SecuenceViewer())
         
-        self.gui.data.model.controller.connect('added_device', self.on_added_device)
-        self.gui.data.model.controller.connect('removed_device', self.on_removed_device)
+        self.gui.data.controller.connect('added_device', self.on_added_device)
+        self.gui.data.controller.connect('removed_device', self.on_removed_device)
         self._cmbPlan.connect('show', self.on_added_device)
         self._cmbPlan.connect('changed', self.on_plan_changed)
 

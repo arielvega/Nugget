@@ -35,16 +35,15 @@ pygtk.require20()
 import gtk, os, threading, gobject
 from gtk import glade
 
-from uadh import gui
-from uadh.gui import gtk2gui
+from uadh.gui import gtk2gui, base
 from uadh.plugins import Plugin
 import mobile
-from DialerMonitor import Monitor 
-from Progress import ProgressDialog
+from dialermonitor import Monitor 
+from progress import ProgressDialog
 from subprocess import Popen, PIPE
-from Status import *
+from status import *
 
-base = '/usr/share/nugget-data/'
+basepath = './'#'/usr/share/nugget-data/'
 
 class Main(Plugin):
     def __init__(self, data):
@@ -52,7 +51,7 @@ class Main(Plugin):
         self._view = data.view
 
     def run(self):
-        s = gui.Section('Conectar',ConnectorGui(self._data))
+        s = base.Section('Conectar',ConnectorGui(self._data))
         self._view.add_section(s)
 
     def get_id(self):
@@ -74,7 +73,7 @@ class ConnectorGui(gtk.Table):
 
         #Instances
         self.__dialog = ProgressDialog(self._mainView)
-        self.controller = self._data.model.controller
+        self.controller = self._data.controller
         self.operators = []
         self.mon = Monitor()
         
@@ -111,7 +110,7 @@ class ConnectorGui(gtk.Table):
 
     def __disconnected_dialog(self,monitor):
         self.__dialog.should_change = False
-        self.__dialog.image.set_from_file(base + 'icons/network-error.png')
+        self.__dialog.image.set_from_file(basepath + 'icons/network-error.png')
         self._mainView.set_status_message("Error")
         self.__dialog.button.set_label("Cerrar")
 
@@ -123,7 +122,7 @@ class ConnectorGui(gtk.Table):
 
     def build_list_operators(self):
         from xml.dom.minidom import parse
-        midom = parse(base + 'conf/operators.xml')
+        midom = parse(basepath + 'conf/operators.xml')
         m_operators = midom.childNodes[0].childNodes
         for m_operator in m_operators:
             if (m_operator.nodeType == 1):
@@ -162,7 +161,7 @@ class ConnectorGui(gtk.Table):
         for i in self.operators:
             iter = liststore.append()
             liststore.set_value(iter, 1, i.get_attrib('name'))
-            logo_path = base + "icons/"+i.get_attrib('logo')+ '.png'
+            logo_path = basepath + "icons/"+i.get_attrib('logo')+ '.png'
             if os.path.exists(logo_path):
                 liststore.set_value(iter, 0, gtk.gdk.pixbuf_new_from_file(logo_path))
         self._cmbOperators.set_model(liststore)

@@ -108,7 +108,7 @@ class DeviceController(gobject.GObject):
             pass
         
 
-    def __unplug_device_cb(self, udi):
+    def __unplug_device_cb(self, udi, other):
         if (self.device_active != None):
             if(self.device_active.dev_props['info.udi'] == udi):
                 self.device_active = None

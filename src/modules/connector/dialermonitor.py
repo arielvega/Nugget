@@ -32,7 +32,7 @@ import os
 from subprocess import Popen, PIPE
 import gobject
 import time
-import Status
+import status
 from random import random
 
 import threading
@@ -70,7 +70,7 @@ class Monitor(gobject.GObject):
         self.last_traffic_time = 0.0
         self.dns_data = None
         self.select_operator = None
-        self.status_flag = Status.PPP_STATUS_DISCONNECTED
+        self.status_flag = status.PPP_STATUS_DISCONNECTED
 
     def __create_config(self, modem_active):
         wvdial_conf = "[Dialer Defaults]\n"

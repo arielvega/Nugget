@@ -34,8 +34,7 @@ import pygtk
 pygtk.require20()
 import gtk
 
-from uadh import gui
-from uadh.gui import gtk2gui
+from uadh.gui import gtk2gui, base
 
 from uadh.plugins import Plugin
 import mobile
@@ -46,7 +45,7 @@ class Main(Plugin):
         self._view = data.view
 
     def run(self):
-        s = gui.Section('Sms',SmsGui(self._data))
+        s = base.Section('Sms',SmsGui(self._data))
         self._view.add_section(s)
 
     def get_id(self):
@@ -64,8 +63,8 @@ class SmsGui(gtk.Notebook):
         self.append_page(self.receivegui, gtk.Label('Recibir'))
         self.set_tab_pos(gtk.POS_LEFT)
         self.connect('switch-page', self.on_switch_page)
-        self.data.model.controller.connect('added_device', self.on_added_device)
-        self.data.model.controller.connect('removed_device', self.on_removed_device)
+        self.data.controller.connect('added_device', self.on_added_device)
+        self.data.controller.connect('removed_device', self.on_removed_device)
         self.load_gui()
 
     def on_added_device(self, m_controller, dev):
@@ -146,7 +145,7 @@ class SmsSendGui(gtk.Table):
     def load_contacts(self):
         port = None
         try:
-            port = self.smsgui.data.model.controller.device_active.port['conf']
+            port = self.smsgui.data.controller.device_active.port['conf']
             if port <> None:
                 dev = mobile.MobilePhone(mobile.ATTerminalConnection(port))
                 self._lstPhoneBook.clear()
@@ -178,7 +177,7 @@ class SmsSendGui(gtk.Table):
     def send_message(self):
         port = None
         try:
-            port = self.smsgui.data.model.controller.device_active.port['conf']
+            port = self.smsgui.data.controller.device_active.port['conf']
             if port <> None:
                 numbers = self._txtNumber.get_text()
                 message = self._txtMessage.get_text(self._txtMessage.get_start_iter(), self._txtMessage.get_end_iter()) 
@@ -330,7 +329,7 @@ class SmsReceiveGui(gtk.Table):
     def load_messages(self):
         port = None
         try:
-            port = self.smsgui.data.model.controller.device_active.port['conf']
+            port = self.smsgui.data.controller.device_active.port['conf']
             if port <> None:
                 dev = mobile.MobilePhone(mobile.ATTerminalConnection(port))
                 self._lstMessages.clear()
@@ -394,7 +393,7 @@ class SmsReceiveGui(gtk.Table):
             return
         port = None
         try:
-            port = self.smsgui.data.model.controller.device_active.port['conf']
+            port = self.smsgui.data.controller.device_active.port['conf']
             if port <> None:
                 dev = mobile.MobilePhone(mobile.ATTerminalConnection(port))
                 dev.delete_sms(self.sms)
