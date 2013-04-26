@@ -261,8 +261,8 @@ class SmsSendGui(gtk.Table):
 
     def on_text_message_changed(self, *w):
         msg = self.get_message()
-        smscount = ((len(msg) -1) / mobile.SMS_ASCII_LENGHT) +1
-        lenremaining = (mobile.SMS_ASCII_LENGHT - (len(msg) % mobile.SMS_ASCII_LENGHT)) % mobile.SMS_ASCII_LENGHT
+        smscount = ((len(msg) -1) / mobile.common.SMS_ASCII_LENGHT) +1
+        lenremaining = (mobile.common.SMS_ASCII_LENGHT - (len(msg) % mobile.common.SMS_ASCII_LENGHT)) % mobile.common.SMS_ASCII_LENGHT
         txt = "Sms's: %i \nCaracteres Restantes: %i" % (smscount, lenremaining)
         self._lblStatus.set_text(txt)
 

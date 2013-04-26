@@ -138,7 +138,7 @@ class PrepaidGui(gtk.Table):
         if self.conf <> None:
             return self.conf[obj]
         if len(terms)>0:
-            dev = mobile.MobilePhone(terms[-1])
+            dev = mobile.MobilePhone(terms.values()[0][-1])
             configmanager = configurator.ConfConfigurator(basepath + 'conf/countries')
             self.conf = configmanager.get_configuration('/' + dev.get_country_code() + '/' + dev.get_network_code() + '/prepaid.conf')
             dev.power_off()
