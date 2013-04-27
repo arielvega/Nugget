@@ -14,6 +14,6 @@ El GUI esta casi completo
 To-do list
 Secciones:
 *La seccion de estadistica debe mostrar datos de la coneccion tales como velocidad de descarga y de subida tiempo conectado etc... solo falta unir los label con las variables nada mas :D
-*La grafica de las estadisticas al parecer debe desarrollarse en cairo (yo me voy a encargar de esto)
-*El asistente de reconocimiento de dispositivos seriales necesito ideas...
+*La grafica de las estadisticas al parecer debe desarrollarse en cairo
+*El algoritmo de autoconfiguracion de modems (para deshacernos de modems.xml)
 
