@@ -53,6 +53,7 @@ class Main(Plugin):
     def run(self):
         s = base.Section('Prepago', PrepaidGui(self._data))
         self._view.add_section(s)
+        pass
 
     def get_id(self):
         return 'prepaid-plugin'

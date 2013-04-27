@@ -45,8 +45,9 @@ class Main(Plugin):
         self._view = data.view
 
     def run(self):
-        s = base.Section('Monitor',MonitorGui(self._view))
-        self._view.add_section(s)
+        #s = base.Section('Monitor',MonitorGui(self._view))
+        #self._view.add_section(s)
+        pass
 
     def get_id(self):
         return 'monitor-plugin'

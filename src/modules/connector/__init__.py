@@ -51,8 +51,9 @@ class Main(Plugin):
         self._view = data.view
 
     def run(self):
-        s = base.Section('Conectar',ConnectorGui(self._data))
-        self._view.add_section(s)
+        #s = base.Section('Conectar',ConnectorGui(self._data))
+        #self._view.add_section(s)
+        pass
 
     def get_id(self):
         return 'connector-plugin'

@@ -27,8 +27,7 @@ Created on 11/08/2012
 @author: Uremix Team (http://uremix.org)
 
 '''
-import dbus
-import os
+
 import gobject
 from Devices import *
 import pyudev

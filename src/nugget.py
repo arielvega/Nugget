@@ -68,6 +68,7 @@ class Nugget(uadh.UObject):
         gtk.gdk.threads_leave()
     
     def on_added_device(self, *a):
+        print 'dispositivo detectado'
         if not self._added:
             self._added = True
             self.__terminal = mobile.ATTerminalConnection(self.controller.device_active.port['conf'])
@@ -77,8 +78,10 @@ class Nugget(uadh.UObject):
             self.__terminal.start()
 
     def on_removed_device(self,*a):
+        print 'dispositivo removido'
         self.emit('removed_device')
         self.device = None
+        self.__terminal.stop()
         self.__terminal = None
 
     def on_exit(self, *a):

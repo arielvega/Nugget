@@ -28,8 +28,6 @@ Created on 11/08/2012
 
 '''
 
-#import dbus
-#import os
 import gobject
 from devices import *
 import pyudev
@@ -46,6 +44,7 @@ class DeviceController(gobject.GObject):
         
         self.context = pyudev.Context()
         monitor = pyudev.Monitor.from_netlink(self.context)
+        monitor.filter_by(subsystem='usb-serial')
         observer = GUDevMonitorObserver(monitor)
         observer.connect("device-added", self.__plug_device_cb)
         observer.connect("device-removed", self.__unplug_device_cb)
