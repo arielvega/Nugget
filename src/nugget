@@ -29,4 +29,4 @@
 #
 ##########################################
 
-gksu python /usr/lib/nugget/nugget.py
+gksu python nugget.py
