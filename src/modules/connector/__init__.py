@@ -51,8 +51,8 @@ class Main(Plugin):
         self._view = data.view
 
     def run(self):
-        #s = base.Section('Conectar',ConnectorGui(self._data))
-        #self._view.add_section(s)
+        s = base.Section('Conectar',ConnectorGui(self._data))
+        self._view.add_section(s)
         pass
 
     def get_id(self):
@@ -115,10 +115,10 @@ class ConnectorGui(gtk.Table):
         self._mainView.set_status_message("Error")
         self.__dialog.button.set_label("Cerrar")
 
-    def __plug(self,m_controller,dev):
-        self._mainView.set_status_message("Dispositivo activo: "+dev)
+    def __plug(self,controller):
+        self._mainView.set_status_message("Dispositivo activo: "+controller.device_active.name)
 
-    def __unplug(self,m_controller):
+    def __unplug(self,controller):
         self._mainView.set_status_message('No hay ningun dispositivo activo')
 
     def build_list_operators(self):

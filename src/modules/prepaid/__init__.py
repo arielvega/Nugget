@@ -70,17 +70,8 @@ class PrepaidGui(gtk.Table):
         self.attach(self._lblStatus, 0, 1, 2, 3, xpadding = 10, ypadding = 10, xoptions = gtk.EXPAND | gtk.FILL, yoptions=False)
 
     def send_message(self, number, message):
-        port = None
-        try:
-            port = self.data.controller.device_active.port['conf']
-        except:
-            pass
-        if port <> None:
-            terms = [mobile.ATTerminalConnection(port)]
-        else:
-            terms = mobile.list_at_terminals() # list available terminals :D 
-        if (len(terms)>0) and (len(number)>0) and (len(message)>0):
-            dev = mobile.MobilePhone(terms[-1])
+        dev = self.data.device
+        if (dev<>None) and (len(number)>0) and (len(message)>0):
             sms = dev.create_sms(message, number)
             if sms.send():
                 self.show_message('Mensaje enviado a ' + number)
@@ -88,9 +79,8 @@ class PrepaidGui(gtk.Table):
             else:
                 self.show_message('No se pudo enviar mensaje a ' + number)
                 pass
-            dev.power_off()
         else:
-            if (len(terms) == 0):
+            if (dev == None):
                 self.show_message('No se encontro dispositivo')
                 return
             if (len(number) == 0):
@@ -101,24 +91,14 @@ class PrepaidGui(gtk.Table):
                 return
 
     def make_call(self, number):
-        port = None
-        try:
-            port = self.data.controller.device_active.port['conf']
-        except:
-            pass
-        if port <> None:
-            terms = [mobile.ATTerminalConnection(port)]
-        else:
-            terms = mobile.list_at_terminals() # list available terminals :D 
-        if (len(terms)>0) and (len(number)>0):
-            dev = mobile.MobilePhone(terms[-1])
+        dev = self.data.device
+        if (dev <> None) and (len(number)>0):
             if dev.call(number):
                 self.show_message('Llamada exitosa a ' + number)
             else:
                 self.show_message('No se pudo llamar a ' + number)
-            dev.power_off()
         else:
-            if (len(terms) == 0):
+            if (dev == None):
                 self.show_message('No se encontro dispositivo')
                 return
             if (len(number) == 0):
@@ -126,23 +106,12 @@ class PrepaidGui(gtk.Table):
                 return
 
     def get_config(self, obj):
-        port = None
-        try:
-            port = self.data.controller.device_active.port['conf']
-            print port
-        except:
-            pass
-        if port <> None:
-            terms = [mobile.ATTerminalConnection(port)]
-        else:
-            terms = mobile.list_at_terminals() # list available terminals :D 
         if self.conf <> None:
             return self.conf[obj]
-        if len(terms)>0:
-            dev = mobile.MobilePhone(terms.values()[0][-1])
+        dev = self.data.device
+        if (dev <> None):
             configmanager = configurator.ConfConfigurator(basepath + 'conf/countries')
             self.conf = configmanager.get_configuration('/' + dev.get_country_code() + '/' + dev.get_network_code() + '/prepaid.conf')
-            dev.power_off()
         if self.conf <> None:
             return self.conf[obj]
         else:

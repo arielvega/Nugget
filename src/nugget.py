@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 #
 #
 # Copyright 2011,2013 Uremix (http://www.uremix.org) and contributors.
@@ -28,7 +30,6 @@ Created on 02/10/2011
 
 '''
 
-#!/usr/bin/python
 
 import pygtk
 import time
@@ -44,7 +45,6 @@ import mobile
 class Nugget(uadh.UObject):
     def __init__(self, datapath = './', pluginspath = './'):
         uadh.UObject.__init__(self)
-        self.__terminal = None
         self._added = False
         self.device = None
         self.add_event('added_device')
@@ -71,23 +71,22 @@ class Nugget(uadh.UObject):
         print 'dispositivo detectado'
         if not self._added:
             self._added = True
-            self.__terminal = mobile.ATTerminalConnection(self.controller.device_active.port['conf'])
-            self.device = mobile.MobilePhone(self.__terminal)
+            self.device = mobile.MobilePhone(self.controller.device_active.port['conf'])
             self.emit('added_device')
             time.sleep(3)
-            self.__terminal.start()
 
     def on_removed_device(self,*a):
         print 'dispositivo removido'
         self.emit('removed_device')
+        if self.device <> None:
+            self.device.power_off()
         self.device = None
-        self.__terminal.stop()
-        self.__terminal = None
 
     def on_exit(self, *a):
         print 'cerrando Nugget'
-        if self.__terminal <> None:
-            self.__terminal.stop()
+        self.controller.stop()
+        if self.device <> None:
+            self.device.power_off()
 
 if __name__ == '__main__':
     nugget3g = Nugget()

@@ -67,10 +67,10 @@ class SmsGui(gtk.Notebook):
         self.data.controller.connect('removed_device', self.on_removed_device)
         self.load_gui()
 
-    def on_added_device(self, m_controller, dev):
+    def on_added_device(self, controller):
         self.load_gui()
 
-    def on_removed_device(self, m_controller):
+    def on_removed_device(self, controller):
         self.load_gui()
 
     def load_gui(self):
@@ -143,14 +143,11 @@ class SmsSendGui(gtk.Table):
         self.load_contacts()
 
     def load_contacts(self):
-        port = None
         try:
-            port = self.smsgui.data.controller.device_active.port['conf']
-            if port <> None:
-                dev = mobile.MobilePhone(mobile.ATTerminalConnection(port))
+            dev = self.smsgui.data.device
+            if (dev <> None):
                 self._lstPhoneBook.clear()
                 self._lstPhoneBook.add_all(dev.get_phonebook())
-                dev.power_off()
                 self._lblStatus.set_text('Listo')
             else:
                 self._lblStatus.set_text('No se encontro dispositivo')
@@ -175,14 +172,12 @@ class SmsSendGui(gtk.Table):
         return self._txtMessage.get_text(self._txtMessage.get_start_iter(), self._txtMessage.get_end_iter())
 
     def send_message(self):
-        port = None
         try:
-            port = self.smsgui.data.controller.device_active.port['conf']
-            if port <> None:
+            dev = self.smsgui.data.device
+            if (dev <> None):
                 numbers = self._txtNumber.get_text()
                 message = self._txtMessage.get_text(self._txtMessage.get_start_iter(), self._txtMessage.get_end_iter()) 
                 if (len(numbers)>0) and (len(message)>0):
-                    dev = mobile.MobilePhone(mobile.ATTerminalConnection(port))
                     numbers = numbers.split(',')
                     for number in numbers:
                         sms = dev.create_sms(message, number)
@@ -190,7 +185,6 @@ class SmsSendGui(gtk.Table):
                             self._lblStatus.set_text('Mensaje enviado a ' + number)
                         else:
                             self._lblStatus.set_text('No se pudo enviar mensaje a ' + number)
-                    dev.power_off()
                 else:
                     if (len(numbers) == 0):
                         self._lblStatus.set_text('Debe introducir un telefono')
@@ -201,7 +195,7 @@ class SmsSendGui(gtk.Table):
             else:
                 self._lblStatus.set_text('No se encontro dispositivo')
         except:
-            pass
+            raise
 
     def cancel_message(self):
         self._txtMessage.set_text('')
@@ -327,14 +321,11 @@ class SmsReceiveGui(gtk.Table):
         self.load_messages()
 
     def load_messages(self):
-        port = None
         try:
-            port = self.smsgui.data.controller.device_active.port['conf']
-            if port <> None:
-                dev = mobile.MobilePhone(mobile.ATTerminalConnection(port))
+            dev = self.smsgui.data.device
+            if (dev <> None):
                 self._lstMessages.clear()
                 self._lstMessages.add_all(dev.list_sms())
-                dev.power_off()
                 self._lblStatus.set_text('Listo')
             else:
                 self._lblStatus.set_text('No se encontro dispositivo')
@@ -391,13 +382,10 @@ class SmsReceiveGui(gtk.Table):
     def delete_message(self):
         if self.sms == None:
             return
-        port = None
         try:
-            port = self.smsgui.data.controller.device_active.port['conf']
-            if port <> None:
-                dev = mobile.MobilePhone(mobile.ATTerminalConnection(port))
+            dev = self.smsgui.data.device
+            if (dev <> None):
                 dev.delete_sms(self.sms)
-                dev.power_off()
                 self._lblStatus.set_text('Mensaje eliminado')
                 self.sms = None
                 self.load_messages()

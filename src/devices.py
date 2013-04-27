@@ -22,16 +22,13 @@
 
 
 '''
-Created on 11/08/2012
+Created on 26/04/2013
 
 @author: Uremix Team (http://uremix.org)
 
 '''
 
-from xml.dom.minidom import parse
-
-#base = '/usr/share/nugget-data/'
-base = './'
+import mobile
 
 class Device:
     def __init__(self):
@@ -39,41 +36,44 @@ class Device:
         self.vendor = None
         self.product = None
         self.dev_props = None
+        self.IMEI = None
         self.port = {}
 
-    def get_port(self,str):
-        return self.port[str]
+    def get_port(self,name):
+        return self.port[name]
+
+    def has_port(self,port):
+        port = port[port.rfind('/')+1:]
+        for localport in self.port.values():
+            if localport == port:
+                return True
+        return False
 
 class DevicesAvalaible:
     def __init__(self):
-        midom=parse(base + "conf/modems.xml")
-        self.vendors = midom.childNodes[1].childNodes
-        self.__nProduct = None
-        self.__nVendor = None
+        pass
 
     def is_device_supported(self,idVendor,idProduct):
-        for vendor in self.vendors:
-            if(vendor.nodeType==1):
-                if(vendor.attributes.get("id").value==idVendor):
-                    products = vendor.childNodes
-                    for product in products:
-                        if(product.nodeType==1):
-                            if(product.attributes.get("id").value==idProduct):
-                                self.__nProduct = product
-                                self.__nVendor = vendor
-                                return True
-                    break
-        return False
+        return True
 
-    def get_Device(self):
-        if(self.__nProduct != None):
-            d = Device()
-            d.name = self.__nVendor.attributes.get("name").value
-            d.vendor = self.__nVendor.attributes.get("id").value
-            d.product = self.__nProduct.attributes.get("id").value
-            attribs = self.__nProduct.childNodes
-            for attrib in attribs:
-                if(attrib.nodeType == 1 and attrib.nodeName != "capabilities"):
-                    d.port[attrib.nodeName] = attrib.childNodes[0].data
-            return d
-        return None
+    def get_device(self):
+        l = mobile.list_at_terminals()
+        if len(l)>0:
+            mydevice = Device()
+            (mydevice.IMEI,ports) = l.items()[0]
+            mobiledevice = mobile.MobileDevice(ports[-1])
+            mydevice.vendor = mobiledevice.get_manufacturer()
+            mydevice.product = mobiledevice.get_model()
+            mydevice.name = mydevice.vendor + ' ' + mydevice.product
+            ports.sort()
+            mobiledevice.power_off()
+            portname = ports[0].get_port_name()
+            mydevice.port['data'] = portname[portname.rfind('/')+1:]
+            if len(ports)>1:
+                portname = ports[-1].get_port_name()
+                mydevice.port['conf'] = portname[portname.rfind('/')+1:]
+            else:
+                mydevice.port['conf'] = None
+            return mydevice
+        else:
+            return None

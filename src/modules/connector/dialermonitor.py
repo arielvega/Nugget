@@ -92,7 +92,7 @@ class Monitor(gobject.GObject):
 
     def __start_wvdial(self):
         print "Starting Wvdial"
-        self.status_flag = Status.PPP_STATUS_CONNECTING
+        self.status_flag = status.PPP_STATUS_CONNECTING
         self.emit('connecting')
         
         cmd = "/usr/bin/wvdial -C %s" % self.wvdial_conf_file
@@ -129,7 +129,7 @@ class Monitor(gobject.GObject):
             self.ppp_if = None
             self.last_traffic_time = 0.0
             self.dns_data = None
-            self.status_flag = Status.PPP_STATUS_DISCONNECTED
+            self.status_flag = status.PPP_STATUS_DISCONNECTED
 
             print "emit disconnected"
             self.emit('disconnected')
@@ -137,7 +137,7 @@ class Monitor(gobject.GObject):
             return False
 
     def __pppd_monitor(self):
-        if self.status_flag == Status.PPP_STATUS_DISCONNECTING or self.status_flag == Status.PPP_STATUS_DISCONNECTED :
+        if self.status_flag == status.PPP_STATUS_DISCONNECTING or self.status_flag == status.PPP_STATUS_DISCONNECTED :
             print "pppd monitor stopped, status disconnecting or disconected"
             self.pppd_pid == None
             self.ppp_if = None
@@ -189,7 +189,7 @@ class Monitor(gobject.GObject):
             if out != "" :
                 print  "pppd monitor : pppd connected"
                 self.__set_dns_info()
-                self.status_flag = Status.PPP_STATUS_CONNECTED
+                self.status_flag = status.PPP_STATUS_CONNECTED
                 self.emit('connected')
                 gobject.timeout_add(2000, self.__stats_monitor)
                 return False
@@ -200,7 +200,7 @@ class Monitor(gobject.GObject):
 
     def start(self, current_op, modem_active):
         print "DAEMON ----> INIT"
-        if self.status_flag != Status.PPP_STATUS_DISCONNECTED :
+        if self.status_flag != status.PPP_STATUS_DISCONNECTED :
             return 
         self.__select_operator = current_op
         self.__create_config(modem_active)
@@ -219,7 +219,7 @@ class Monitor(gobject.GObject):
         if self.wvdial_pid != None :
             print "emit disconnecting"
             self.emit('disconnecting')
-            self.status_flag = Status.PPP_STATUS_DISCONNECTING
+            self.status_flag = status.PPP_STATUS_DISCONNECTING
             print "kill -15 %s" % self.wvdial_pid
             os.kill(int(self.wvdial_pid), 15)
             
@@ -231,7 +231,7 @@ class Monitor(gobject.GObject):
             
             self.emit('disconnecting')
             print "emit disconnecting"
-            self.status_flag = Status.PPP_STATUS_DISCONNECTING
+            self.status_flag = status.PPP_STATUS_DISCONNECTING
             
             print "kill -15 %s" % self.wvdial_pid
             os.kill(int(self.wvdial_pid), 15)
@@ -263,7 +263,7 @@ class Monitor(gobject.GObject):
             return int(rb) , int(tb)   
 
     def __stats_monitor(self):
-        if self.status_flag == Status.PPP_STATUS_DISCONNECTING or self.status_flag == Status.PPP_STATUS_DISCONNECTED :
+        if self.status_flag == status.PPP_STATUS_DISCONNECTING or self.status_flag == Status.PPP_STATUS_DISCONNECTED :
             print "stats monitor stopped, status flag disconnecting or disconnected"
             return False
             
@@ -285,7 +285,7 @@ class Monitor(gobject.GObject):
                 new_time = time.time()
                 interval_time = new_time - self.last_traffic_time
                 self.last_traffic_time = new_time
-                if self.status_flag == Status.PPP_STATUS_CONNECTED :
+                if self.status_flag == status.PPP_STATUS_CONNECTED :
                     self.emit("pppstats_signal", recived_bytes, sent_bytes, interval_time)
                     print "stats monitor : %i %i %d" % (recived_bytes, sent_bytes, interval_time)
 

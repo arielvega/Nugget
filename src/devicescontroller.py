@@ -28,88 +28,54 @@ Created on 11/08/2012
 
 '''
 
-import gobject
-from devices import *
+import time
+import uadh
+from devices import DevicesAvalaible
 import pyudev
 from pyudev.glib import GUDevMonitorObserver
-import mobile
 
-class DeviceController(gobject.GObject):
-
-    __gsignals__ = {'added_device' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_STRING,)),
-                    'removed_device' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,())}
+class DeviceController(uadh.CommonThread):
 
     def __init__(self):
-        gobject.GObject.__init__(self)
+        uadh.CommonThread.__init__(self)
+        self.add_event('added_device')
+        self.add_event('removed_device')
         
         self.context = pyudev.Context()
         monitor = pyudev.Monitor.from_netlink(self.context)
         monitor.filter_by(subsystem='usb-serial')
         observer = GUDevMonitorObserver(monitor)
-        observer.connect("device-added", self.__plug_device_cb)
-        observer.connect("device-removed", self.__unplug_device_cb)
+        observer.connect("device-added", self.__on_device_added)
+        observer.connect("device-removed", self.__on_device_removed)
         
         self.devices_avalaible = DevicesAvalaible()
         self.device_active = None
-        self.__first_time_hardware_detection()
-        self.available_devices = []
+        #self.available_devices = []
         monitor.enable_receiving()
-        
-    def __first_time_hardware_detection(self):
-        for device in self.context.list_devices(subsystem='usb-serial'):
-            attr = device.attributes
-            try:
-                if(attr['idVendor']!=None):
-                    if self.devices_avalaible.is_device_supported(attr['idVendor'],attr['idProduct']):
-                        self.device_active = self.devices_avalaible.get_Device()
-                        self.emit('added_device',self.device_active.name)
-                        break
-            except Exception:
-                pass
-        if(self.device_active!=None):
-            self.get_ports()
-            print self.device_active
-        else:
-            print "Dispositivo no encontrado"
-        self.devices = []
-    
-    def get_ports(self):
-        ports=[]
-        for device in self.context.list_devices(subsystem='usb-serial'):
-            ports.append(device.sys_name)
-        ports.sort()
-        if(len(ports)<1):
-            print "Dispositivo no reconocido por el sistema"
-            self.device_active = None
-        else:
-            try:
-                data = self.device_active.port['data']
-                self.device_active.port['data'] = ports[int(data)]
-            except:
-                pass
-            try:
-                conf = self.device_active.port['conf']
-                self.device_active.port['conf'] = ports[int(conf)]
-            except:
-                pass
-            print "Dispositivo reconocido "
-            self.emit('added_device',self.device_active.name)
+        self.start()
 
+    def execute(self):
+        self.__hardware_detection()
+        time.sleep(1)
 
-    def __plug_device_cb(self, monitor, device):
-        attr = device.attributes
-        try:
-            if(attr['idVendor'] != None):
-                if self.devices_avalaible.is_device_supported(attr['idVendor'],attr['idProduct']):
-                    self.device_active = self.devices_avalaible.get_Device()
-                    self.emit('added_device',self.device_active.name)
-        except Exception:
-            pass
-        
+    def __hardware_detection(self):
+        if self.device_active == None:
+            self.device_active = self.devices_avalaible.get_device()
+            if(self.device_active != None):
+                print "Dispositivo reconocido "
+                self.emit('added_device')
+                print self.device_active
+            else:
+                print "Dispositivo no encontrado"
 
-    def __unplug_device_cb(self, udi, other):
+    def __on_device_added(self, monitor, device):
+        pass
+
+    def __on_device_removed(self, udi, device):
         if (self.device_active != None):
-            if(self.device_active.dev_props['info.udi'] == udi):
+            port = device['DEVPATH']
+            port = port[port.rfind('/')+1:]
+            if(self.device_active.has_port(port)):
                 self.device_active = None
                 self.emit('removed_device')
                 print "unplug device"
