@@ -260,13 +260,13 @@ class Monitor(gobject.GObject):
         if rb == "" and tb == "" :
             return 0, 0
         else:
-            return int(rb) , int(tb)   
+            return int(rb) , int(tb)
 
     def __stats_monitor(self):
-        if self.status_flag == status.PPP_STATUS_DISCONNECTING or self.status_flag == Status.PPP_STATUS_DISCONNECTED :
+        if self.status_flag == status.PPP_STATUS_DISCONNECTING or self.status_flag == status.PPP_STATUS_DISCONNECTED :
             print "stats monitor stopped, status flag disconnecting or disconnected"
             return False
-            
+
         if self.wvdial_p == None:
             print "stats monitor stopped, not wvdial running"
             return False
