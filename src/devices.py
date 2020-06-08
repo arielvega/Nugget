@@ -49,6 +49,13 @@ class Device:
                 return True
         return False
 
+    def __str__(self):
+        return self.name + '( IMEI: '+self.IMEI+', '+self.port+')'
+
+    def __repr__(self):
+        return str(self)
+
+
 class DevicesAvalaible:
     def __init__(self):
         pass
